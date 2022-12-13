@@ -21,6 +21,7 @@ export const {
     bp5: "(min-width: 1200px)",
     bp6: "(min-width: 1800px)",
     bp7: "(max-width: 900px)",
+    bp8: "(min-width: 1500px)",
     motion: "(prefers-reduced-motion)",
     hover: "(any-hover: hover)",
     dark: "(prefers-color-scheme: dark)",
@@ -37,6 +38,7 @@ export const {
       danger: "#CF304A",
       purple: "#B982FF",
       salmon: "#FEDCC5",
+      background: "#f5f5f9",
     },
 
     space: {
@@ -74,6 +76,7 @@ export const {
     },
     fonts: {
       general: "Raleway" || "sans-serif",
+      price: "Inter" || "sans-serif",
     },
   },
   utils: {
