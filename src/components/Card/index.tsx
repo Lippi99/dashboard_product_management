@@ -53,15 +53,17 @@ export const Card = ({
 
   return (
     <Container>
-      <h2 className="title">{title}</h2>
-      <div className="image">{image}</div>
+      <Flex justify="between">
+        <h2 className="title">{title}</h2>
+        <div>{image}</div>
+      </Flex>
       <h1 className="price">{value}</h1>
-      <Flex css={{ mt: "$4" }}>
+      {/* <Flex css={{ mt: "$4" }}>
         <PercentageStyle color={percentage > 0 ? "earn" : "loss"}>
           {percentage}%
         </PercentageStyle>
         <p className="sinceWhen">{sinceWhen}</p>
-      </Flex>
+      </Flex> */}
     </Container>
   );
 };

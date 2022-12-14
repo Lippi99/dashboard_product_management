@@ -6,7 +6,7 @@ export const Container = styled("aside", {
   position: "fixed",
   left: 0,
   top: 0,
-  zIndex: 1,
+  zIndex: 10,
   background: "$light",
   overflowX: "hidden",
   paddingTop: "$4",

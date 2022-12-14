@@ -36,6 +36,7 @@ export const {
       grayDarker: "#1A1B23",
       greenLighter: "rgb(3, 166, 109)",
       danger: "#CF304A",
+      warning: "#ffc107",
       purple: "#B982FF",
       salmon: "#FEDCC5",
       background: "#f5f5f9",

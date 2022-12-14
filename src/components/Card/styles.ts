@@ -10,16 +10,17 @@ export const Container = styled("div", {
   boxShadow: "0 0.125rem 0.375rem 0 rgb(161 172 184 / 12%)",
   borderRadius: "$4",
 
+  "@bp2": {
+    maxWidth: "31%",
+  },
+  "@bp7": {
+    maxWidth: "100%",
+  },
+
   ".title": {
     color: "rgb(105, 122, 141)",
     fontWeight: 500,
     fontFamily: "$general",
-  },
-
-  ".image": {
-    position: "absolute",
-    right: 35,
-    top: 35,
   },
 
   ".price": {

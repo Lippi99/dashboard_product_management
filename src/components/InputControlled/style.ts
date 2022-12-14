@@ -1,7 +1,6 @@
 import { styled } from "../../../stitches.config";
 
 export const InputGroup = styled("div", {
-  marginBottom: "$5",
   ".label": {
     fontFamily: "$general",
   },

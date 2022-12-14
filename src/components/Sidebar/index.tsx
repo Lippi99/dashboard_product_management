@@ -2,6 +2,8 @@ import { Container, ContainerHeader } from "./styles";
 import NextImage from "next/image";
 import { css } from "../../../stitches.config";
 import { useState } from "react";
+import { IoMdLogOut } from "react-icons/io";
+import { Box } from "../Box";
 
 export const Sidebar = () => {
   const [navigate, setNavigate] = useState("dashboards");
@@ -74,6 +76,17 @@ export const Sidebar = () => {
           </a>
         </li>
       </ul>
+      <Box
+        css={{
+          cursor: "pointer",
+          position: "absolute",
+          left: "45%",
+          bottom: "15%",
+          right: 0,
+        }}
+      >
+        <IoMdLogOut color="#ff4d4f" size="1.3rem" />
+      </Box>
     </Container>
   );
 };
