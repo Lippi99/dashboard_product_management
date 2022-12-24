@@ -1,10 +1,11 @@
-import { Container, FormContainer } from "../../styles/pages/home";
+import { Container, FormContainer } from "../../styles/pages/login";
 import NextImage from "next/image";
 import Head from "next/head";
 import { InputControlled } from "../components/InputControlled";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useAuth } from "../contexts/AuthContext";
 
 interface SigninProps {
   email: string;
@@ -25,8 +26,14 @@ export default function Home() {
     resolver: yupResolver(schema),
   });
 
-  const handleLogin = (data: SigninProps) => {
-    console.log(data);
+  const { signIn, errorMessageLogin, isLoading } = useAuth();
+
+  const handleLogin = async (data: SigninProps) => {
+    try {
+      await signIn(data);
+    } catch (error) {
+      console.log("deu erro", error);
+    }
   };
 
   return (
@@ -81,10 +88,15 @@ export default function Home() {
                 errorMessage={errors.password?.message}
               />
             </fieldset>
-            <button className="signIn">Entrar</button>
+            {isLoading ? (
+              <button className="loading">Carregando...</button>
+            ) : (
+              <button className="signIn">Entrar</button>
+            )}
           </form>
         </FormContainer>
       </Container>
+      {errorMessageLogin}
     </>
   );
 }

@@ -4,7 +4,13 @@ import { css } from "../../../stitches.config";
 import { useState } from "react";
 import { IoMdLogOut } from "react-icons/io";
 import { Box } from "../Box";
+import nookies from "nookies";
+import Router from "next/router";
 
+const logout = () => {
+  nookies.destroy(null, "doceifancia.auth");
+  Router.reload();
+};
 export const Sidebar = () => {
   const [navigate, setNavigate] = useState("dashboards");
 
@@ -85,7 +91,7 @@ export const Sidebar = () => {
           right: 0,
         }}
       >
-        <IoMdLogOut color="#ff4d4f" size="1.3rem" />
+        <IoMdLogOut onClick={logout} color="#ff4d4f" size="1.3rem" />
       </Box>
     </Container>
   );

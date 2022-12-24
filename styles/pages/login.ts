@@ -68,4 +68,18 @@ export const FormContainer = styled("div", {
     color: "$light",
     fontFamily: "$general",
   },
+
+  ".loading": {
+    display: "block",
+    width: "100%",
+    height: "2.5rem",
+    border: "none",
+    borderRadius: "5px",
+    outline: 0,
+    background: "#ccc",
+    marginTop: "20px",
+    color: "$light",
+    fontFamily: "$general",
+    cursor: "not-allowed",
+  },
 });

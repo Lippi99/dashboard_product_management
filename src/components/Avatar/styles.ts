@@ -10,8 +10,7 @@ export const Container = styled("div", {
     userSelect: "none",
     width: "35px",
     height: "35px",
-    borderRadius: " 100%",
-    backgroundColor: "red",
+    borderRadius: "100%",
   },
 
   ".AvatarImage": {

@@ -11,4 +11,9 @@ export const Container = styled("header", {
   paddingTop: "$4",
   zIndex: 1,
   boxShadow: "0 0.125rem 0.375rem 0 rgb(161 172 184 / 12%)",
+
+  ".personTitle": {
+    fontFamily: "$general",
+    color: "black",
+  },
 });

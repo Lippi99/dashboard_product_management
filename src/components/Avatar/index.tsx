@@ -1,19 +1,28 @@
 import * as AvatarAccount from "@radix-ui/react-avatar";
+
 import { Container } from "./styles";
 import "./styles.ts";
 
-export const Avatar = () => {
+interface AvatarProps {
+  user: {
+    image: string;
+    name: string;
+  };
+}
+
+export const Avatar = ({ user }: AvatarProps) => {
   return (
     <Container>
       <AvatarAccount.Root className="AvatarRoot">
         <AvatarAccount.Image
           className="AvatarImage"
-          src="https://images.unsplash.com/photo-1492633423870-43d1cd2775eb?&w=128&h=128&dpr=2&q=80"
+          src={user?.image}
           alt="Colm Tuite"
         />
-        <AvatarAccount.Fallback className="AvatarFallback" delayMs={600}>
-          CT
+        <AvatarAccount.Fallback className="AvatarFallback">
+          {user && user.name}
         </AvatarAccount.Fallback>
+        \
       </AvatarAccount.Root>
     </Container>
   );

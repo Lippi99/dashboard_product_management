@@ -1,36 +1,29 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { keyframes, styled } from "../../../stitches.config";
-import { InputControlled } from "../InputControlled";
+
 import { Button as AntButton, notification } from "antd";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProduct, updateProduct } from "../../services/product";
-import { yupResolver } from "@hookform/resolvers/yup";
+
 import { useForm } from "react-hook-form";
+import { InputControlled } from "../InputControlled";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import { Box } from "../Box";
+import { createProduct } from "../../services/product";
 import { Grid } from "../Grid";
-import { useState } from "react";
-import { getAPIClient } from "../../services/axios";
-
-interface EditDialogProps {
-  title: string;
-  action?: () => void;
-  register?: any;
-  data: ProductProps;
-}
-
-interface ProductID {
-  id: string;
-}
+import { Box } from "../Box";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface ProductProps {
-  id: ProductID;
   quantity: number;
   productName: string;
   price: number;
   materialPrice: number;
   commission: number;
   labor: number;
+}
+
+interface Product {
+  count: number;
+  data: ProductProps[];
 }
 
 const schema = Yup.object({
@@ -42,16 +35,15 @@ const schema = Yup.object({
   labor: Yup.string().required("Digite o valor a mão de obra"),
 });
 
-export const EditDialog = ({ data, title }: EditDialogProps) => {
+export const CreateDialog = () => {
   const [api, contextHolder] = notification.useNotification();
-
-  const productID = data.id;
 
   const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<ProductProps>({
     resolver: yupResolver(schema),
@@ -68,31 +60,31 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
     });
   };
 
-  const { mutate: mutateUpdateProduct, isLoading } = useMutation({
-    mutationFn: (values: ProductProps) => updateProduct(productID!, values),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["getProductList"],
-      }),
-        queryClient.invalidateQueries({ queryKey: ["productWidget"] });
-      openNotificationWithIcon(
-        "success",
-        "Produto atualizado com sucesso!",
-        ""
-      );
+  const { mutate, isLoading } = useMutation(createProduct, {
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["getProductList"] });
+      queryClient.invalidateQueries({ queryKey: ["productWidget"] });
+      openNotificationWithIcon("success", "Produto criado com sucesso!", "");
+      reset();
+    },
+    onError: () => {
+      openNotificationWithIcon("error", "Houve um erro ao criar o produto", "");
     },
   });
 
-  // const handleUpdateProduct = async (data: ProductProps) => {
-  //   // setT(data);
-  //   // updateProduct(productID as any, t!);
-  //   mutateUpdateProduct(productID as any, data as any);
-  // };
+  const handleCreateProduct = async (data: ProductProps) => {
+    mutate(data as any);
+  };
 
   // styles
   const overlayShow = keyframes({
     "0%": { opacity: 0 },
     "100%": { opacity: 1 },
+  });
+
+  const contentShow = keyframes({
+    "0%": { opacity: 0, transform: "translate(-50%, -48%) scale(.96)" },
+    "100%": { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
   });
 
   const DialogOverlay = styled(Dialog.Overlay, {
@@ -217,23 +209,23 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
 
   return (
     <>
+      {/* /success or error toast */}
       {contextHolder}
 
       <Dialog.Root>
         <Dialog.Trigger asChild>
-          <AntButton type="primary">Atualizar</AntButton>
+          <AntButton type="primary">+ADICIONAR PRODUTO</AntButton>
         </Dialog.Trigger>
         <Dialog.Portal>
           <DialogOverlay />
           <DialogContent>
-            <DialogTitle>{title}</DialogTitle>
-            <form onSubmit={handleSubmit(mutateUpdateProduct as any)}>
+            <DialogTitle>Crie seu produto</DialogTitle>
+            <form onSubmit={handleSubmit(handleCreateProduct as any)}>
               <Grid css={{ mt: "$4" }} align="center" columns="2">
                 <Fieldset>
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Nome do produto</Label>
                     <Input
-                      defaultValue={data.productName}
                       placeholder="Nome do produto..."
                       type="text"
                       register={{ ...register("productName") }}
@@ -245,7 +237,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Quantidade</Label>
                     <Input
-                      defaultValue={data.quantity}
                       placeholder="Quantidade"
                       type="number"
                       step=".01"
@@ -258,7 +249,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Valor do produto</Label>
                     <Input
-                      defaultValue={data.price}
                       placeholder="Preço"
                       type="number"
                       step=".01"
@@ -271,7 +261,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Material</Label>
                     <Input
-                      defaultValue={data.materialPrice}
                       placeholder="Preço do material"
                       type="number"
                       step=".01"
@@ -284,7 +273,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Comissão</Label>
                     <Input
-                      defaultValue={data.commission}
                       placeholder="Comissão"
                       type="number"
                       step=".01"
@@ -297,7 +285,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Mão de obra</Label>
                     <Input
-                      defaultValue={data.labor}
                       placeholder="labor"
                       type="number"
                       step=".01"
@@ -310,14 +297,14 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                   {isLoading ? (
                     <Button variant="loading">Carregando...</Button>
                   ) : (
-                    <Button variant="create">Atualizar produto</Button>
+                    <Button variant="create">Criar produto</Button>
                   )}
                 </Box>
               </Grid>
             </form>
 
             <Dialog.Close asChild>
-              <IconButton aria-label="Close">&#10006;</IconButton>
+              <IconButton aria-label="Close">X</IconButton>
             </Dialog.Close>
           </DialogContent>
         </Dialog.Portal>

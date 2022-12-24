@@ -1,81 +1,138 @@
-import { Container } from "../../../styles/pages/dashboards";
+//components
+import { Container, Labor, Text } from "../../../styles/pages/dashboards";
 import { Card } from "../../components/Card";
 import { Sidebar } from "../../components/Sidebar";
 import { Flex } from "../../components/Flex";
-import { BiCaretUpCircle, BiCaretDownCircle } from "react-icons/bi";
 import { AiOutlineDollarCircle } from "react-icons/ai";
 import { Header } from "../../components/Header";
-import { useEffect, useState } from "react";
-import { Table, Button } from "antd";
-
+import { useState } from "react";
+import { Table, Spin } from "antd";
 import { Box } from "../../components/Box";
 import Head from "next/head";
 import { AlertDialog } from "../../components/AlertDialog";
 import { EditDialog } from "../../components/EditDialog";
-import { useForm } from "react-hook-form";
+import { CreateDialog } from "../../components/CreateDialog";
+
+import { GetServerSideProps } from "next";
+import { parseCookies } from "nookies";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  deleteProduct,
+  getAllProducts,
+  getWidgetProduct,
+} from "../../services/product";
+import { numberWithCommas } from "../../utils/number";
+
+interface ProductID extends ProductProps {
+  id: string;
+  data: ProductProps;
+}
+
+interface ProductProps {
+  quantity: number;
+  productName: string;
+  price: number;
+  materialPrice: number;
+  commission: number;
+  labor: number;
+}
 
 export default function Dashboards() {
-  const [posts, setPosts] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<any>({});
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          "https://jsonplaceholder.typicode.com/posts"
-        );
-        const data = await response.json();
-        setPosts(data);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
-  }, []);
+  const queryClient = useQueryClient();
+
+  const {
+    data: products,
+    isLoading,
+    isFetching,
+  } = useQuery({
+    queryKey: ["getProductList", page, pageSize],
+    queryFn: () => getAllProducts(page, pageSize),
+    refetchOnWindowFocus: false,
+    staleTime: 1000 * 60 * 5,
+    keepPreviousData: true,
+  });
+
+  const {
+    data: widget,
+    isLoading: isWidgetLoading,
+    isFetching: isWidgeFetching,
+  } = useQuery({
+    queryKey: ["productWidget"],
+    queryFn: getWidgetProduct,
+    refetchOnWindowFocus: false,
+  });
+
+  const { mutate, isLoading: isDeletingLoading } = useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["getProductList"],
+      }),
+        queryClient.invalidateQueries({ queryKey: ["productWidget"] });
+    },
+  });
 
   const columns: any = [
     {
+      title: "Quantidade",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (text: string) => <Text>{text}</Text>,
+    },
+    {
       title: "Produto",
-      dataIndex: "title",
-      key: "title",
-      render: (text: any) => <a>{text}</a>,
+      dataIndex: "productName",
+      key: "productName",
+      render: (text: string) => <Text>{text}</Text>,
     },
     {
-      title: "Valor (Unitário)",
-      dataIndex: "body",
-      key: "body",
+      title: "Valor do produto",
+      dataIndex: "price",
+      key: "price",
+      render: (text: string) => <Text>R$ {text}</Text>,
     },
     {
-      title: "Total",
-      dataIndex: "userId",
-      key: "userId",
+      title: "Material",
+      dataIndex: "materialPrice",
+      key: "materialPrice",
+      render: (text: string) => <Text>R$ {text}</Text>,
     },
     {
-      title: "Data",
-      dataIndex: "",
-      key: "",
+      title: "Comissão",
+      dataIndex: "commission",
+      key: "commission",
+      render: (text: string) => <Text>R$ {text}</Text>,
     },
+    {
+      title: "Mão de obra",
+      dataIndex: "labor",
+      key: "labor",
+      render: (text: string) => <Text>R$ {text}</Text>,
+    },
+    {
+      title: "Lucro",
+      dataIndex: "profit",
+      key: "profit",
+      render: (text: number) => (
+        <Labor variant={`${text > 0 ? "green" : "danger"}`}>
+          R$ {text.toFixed(2)}
+        </Labor>
+      ),
+    },
+
     {
       title: "Ação",
-      render: (t: any) => {
+      render: (product: ProductID) => {
         return (
           <Flex gap="1">
-            <EditDialog
-              register={register}
-              title="Bonequinho tal tal tal"
-              action={() => console.log(t)}
-            />
+            <EditDialog data={product as any} title={product.productName} />
             <AlertDialog
               title="Atenção, você tem certeza?"
               description="Essa ação não pode ser desfeita. Isso vai fazer ser permanentemente deletado de sua conta."
-              action={() => console.log(t)}
+              action={() => mutate(product.id)}
             />
           </Flex>
         );
@@ -100,55 +157,92 @@ export default function Dashboards() {
         <Sidebar />
         <Header />
         <Box css={{ m: "$7" }}>
-          <Flex
-            css={{
-              "@bp2": {
-                justifyContent: "space-between",
-              },
-              "@bp7": {
-                flexWrap: "wrap",
-                justifyContent: "center",
-              },
-            }}
-            gap="7"
-          >
-            <Card
-              title="Entradas"
-              value="$2.598"
-              percentage={10}
-              sinceWhen="Since last week"
-              image={<BiCaretUpCircle size="30px" color="#1cbb8c" />}
-            />
-            <Card
-              title="Saídas"
-              value="$2.598"
-              percentage={-5.4}
-              sinceWhen="Since last week"
-              image={<BiCaretDownCircle size="30px" color="#dc3545" />}
-            />
-            <Card
-              title="Total"
-              value="$2.598"
-              percentage={-5.4}
-              sinceWhen="Since last week"
-              image={
-                <AiOutlineDollarCircle size="30px" color="rgb(105, 122, 141)" />
-              }
-            />
-          </Flex>
+          <Spin spinning={isWidgetLoading || isWidgeFetching}>
+            <Flex
+              css={{
+                "@bp2": {
+                  justifyContent: "space-between",
+                },
+                "@bp7": {
+                  flexWrap: "wrap",
+                  justifyContent: "center",
+                },
+              }}
+              gap="7"
+            >
+              <Card
+                title="Total de produtos"
+                value={"R$" + numberWithCommas(widget?.price! || 0)}
+                percentage={10}
+                sinceWhen="Since last week"
+              />
+              <Card
+                title="Comissão total"
+                value={"R$" + numberWithCommas(widget?.commission! || 0)}
+                percentage={-5.4}
+                sinceWhen="Since last week"
+              />
+              <Card
+                title="Lucro"
+                value={"R$" + numberWithCommas(widget?.profit! || 0)}
+                percentage={-5.4}
+                sinceWhen="Since last week"
+                image={
+                  <AiOutlineDollarCircle
+                    size="30px"
+                    color="rgb(105, 122, 141)"
+                  />
+                }
+              />
+            </Flex>
+          </Spin>
           <Box
             css={{
-              mt: "$8",
+              mt: "$5",
+              mb: "$5",
             }}
+          >
+            <CreateDialog />
+          </Box>
+
+          <Spin
+            tip="Carregando..."
+            spinning={isLoading || isFetching || isDeletingLoading}
           >
             <Table
               columns={columns}
-              dataSource={posts}
-              pagination={{ current: 1, pageSize: 10 }}
+              dataSource={products?.data}
+              pagination={{
+                total: products?.count,
+                current: page,
+                pageSize: pageSize,
+                showSizeChanger: true,
+                onChange: (page: number, pageSize: number) => {
+                  setPage(page);
+                  setPageSize(pageSize);
+                },
+              }}
             />
-          </Box>
+          </Spin>
         </Box>
       </Container>
     </>
   );
 }
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const { "doceifancia.auth": token } = parseCookies(ctx);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
