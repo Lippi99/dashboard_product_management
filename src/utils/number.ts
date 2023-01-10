@@ -1,6 +1,6 @@
-export const numberWithCommas = (value: number) => {
+export const numberWithCommas = (value: number, decimals: number) => {
   return value
-    ?.toFixed(2)
+    ?.toFixed(decimals)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };

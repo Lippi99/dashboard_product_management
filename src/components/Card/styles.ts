@@ -18,7 +18,7 @@ export const Container = styled("div", {
   },
 
   ".title": {
-    color: "rgb(105, 122, 141)",
+    color: "$text",
     fontWeight: 500,
     fontFamily: "$general",
   },
@@ -31,7 +31,7 @@ export const Container = styled("div", {
   },
 
   ".sinceWhen": {
-    color: "rgb(105, 122, 141)",
+    color: "$text",
     fontFamily: "$general",
   },
 });

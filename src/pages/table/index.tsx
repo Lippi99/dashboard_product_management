@@ -1,13 +1,8 @@
 //components
-import { Container, Labor, Text } from "../../../styles/pages/dashboards";
-import { Card } from "../../components/Card";
-import { Sidebar } from "../../components/Sidebar";
+import { Labor, Text } from "../../../styles/pages/table";
 import { Flex } from "../../components/Flex";
-import { AiOutlineDollarCircle } from "react-icons/ai";
-import { Header } from "../../components/Header";
 import { useState } from "react";
-import { Table, Spin } from "antd";
-import { Box } from "../../components/Box";
+import { Table, Spin, DatePicker, DatePickerProps } from "antd";
 import Head from "next/head";
 import { AlertDialog } from "../../components/AlertDialog";
 import { EditDialog } from "../../components/EditDialog";
@@ -22,13 +17,13 @@ import {
   getWidgetProduct,
 } from "../../services/product";
 import { numberWithCommas } from "../../utils/number";
-
-interface ProductID extends ProductProps {
-  id: string;
-  data: ProductProps;
-}
+import { dateFormat } from "../../utils/date";
+import { BaseLayout } from "../../components/BaseLayout";
+import { Widget } from "../../components/Widget";
+import dayjs from "dayjs";
 
 interface ProductProps {
+  id: string;
   quantity: number;
   productName: string;
   price: number;
@@ -37,9 +32,22 @@ interface ProductProps {
   labor: number;
 }
 
+interface TableProduct {
+  title: string;
+  dataIndex?: string;
+  key: string;
+  render: (value: any) => JSX.Element;
+}
+
+const initialDate = dayjs().startOf("month").format("YYYY-MM-DD");
+
+const endDate = dayjs().endOf("month").format("YYYY-MM-DD");
+
 export default function Dashboards() {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [dateStart, setDateStart] = useState<string>(initialDate);
+  const [dateEnd, setDateEnd] = useState<string>(endDate);
 
   const queryClient = useQueryClient();
 
@@ -48,8 +56,8 @@ export default function Dashboards() {
     isLoading,
     isFetching,
   } = useQuery({
-    queryKey: ["getProductList", page, pageSize],
-    queryFn: () => getAllProducts(page, pageSize),
+    queryKey: ["getProductList", page, pageSize, dateStart, dateEnd],
+    queryFn: () => getAllProducts(page, pageSize, dateStart, dateEnd),
     refetchOnWindowFocus: false,
     staleTime: 1000 * 60 * 5,
     keepPreviousData: true,
@@ -75,12 +83,23 @@ export default function Dashboards() {
     },
   });
 
-  const columns: any = [
+  const handleChangeData: DatePickerProps["onChange"] = (date, dateString) => {
+    const dateYear = dayjs(dateString).year();
+    const dateMonth = dayjs(dateString).month() + 1;
+
+    const dateStart = `${dateYear}-${dateMonth}-01`;
+    const dateEnd = `${dateYear}-${dateMonth}-31`;
+
+    setDateStart(dateStart);
+    setDateEnd(dateEnd);
+  };
+
+  const columns: TableProduct[] = [
     {
       title: "Quantidade",
       dataIndex: "quantity",
       key: "quantity",
-      render: (text: string) => <Text>{text}</Text>,
+      render: (text: number) => <Text>{numberWithCommas(text, 0)}</Text>,
     },
     {
       title: "Produto",
@@ -92,25 +111,31 @@ export default function Dashboards() {
       title: "Valor do produto",
       dataIndex: "price",
       key: "price",
-      render: (text: string) => <Text>R$ {text}</Text>,
+      render: (text: number) => <Text>R$ {numberWithCommas(text, 2)}</Text>,
     },
     {
       title: "Material",
       dataIndex: "materialPrice",
       key: "materialPrice",
-      render: (text: string) => <Text>R$ {text}</Text>,
+      render: (text: number) => <Text>R$ {numberWithCommas(text, 2)}</Text>,
     },
     {
       title: "Comissão",
       dataIndex: "commission",
       key: "commission",
-      render: (text: string) => <Text>R$ {text}</Text>,
+      render: (text: number) => <Text>R$ {numberWithCommas(text, 2)}</Text>,
     },
     {
       title: "Mão de obra",
       dataIndex: "labor",
       key: "labor",
-      render: (text: string) => <Text>R$ {text}</Text>,
+      render: (text: number) => <Text>R$ {numberWithCommas(text, 2)}</Text>,
+    },
+    {
+      title: "Data",
+      dataIndex: "date",
+      key: "date",
+      render: (text: Date) => <Text> {dateFormat(text, "DD/MM/YYYY")}</Text>,
     },
     {
       title: "Lucro",
@@ -125,10 +150,10 @@ export default function Dashboards() {
 
     {
       title: "Ação",
-      render: (product: ProductID) => {
+      render: (product: ProductProps) => {
         return (
           <Flex gap="1">
-            <EditDialog data={product as any} title={product.productName} />
+            <EditDialog data={product} title={product.productName} />
             <AlertDialog
               title="Atenção, você tem certeza?"
               description="Essa ação não pode ser desfeita. Isso vai fazer ser permanentemente deletado de sua conta."
@@ -138,94 +163,52 @@ export default function Dashboards() {
         );
       },
 
-      key: "userId",
+      key: "id",
     },
   ];
 
   return (
     <>
       <Head>
-        <title>Dashboards</title>
+        <title>Tabela</title>
         <link rel="shortcut icon" href="/logo.ico" />
-        <meta
-          property="og:title"
-          content="dashboards management"
-          key="feltro"
-        />
+        <meta property="og:title" content="Table management" key="feltro" />
       </Head>
-      <Container>
-        <Sidebar />
-        <Header />
-        <Box css={{ m: "$7" }}>
-          <Spin spinning={isWidgetLoading || isWidgeFetching}>
-            <Flex
-              css={{
-                "@bp2": {
-                  justifyContent: "space-between",
-                },
-                "@bp7": {
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                },
-              }}
-              gap="7"
-            >
-              <Card
-                title="Total de produtos"
-                value={"R$" + numberWithCommas(widget?.price! || 0)}
-                percentage={10}
-                sinceWhen="Since last week"
-              />
-              <Card
-                title="Comissão total"
-                value={"R$" + numberWithCommas(widget?.commission! || 0)}
-                percentage={-5.4}
-                sinceWhen="Since last week"
-              />
-              <Card
-                title="Lucro"
-                value={"R$" + numberWithCommas(widget?.profit! || 0)}
-                percentage={-5.4}
-                sinceWhen="Since last week"
-                image={
-                  <AiOutlineDollarCircle
-                    size="30px"
-                    color="rgb(105, 122, 141)"
-                  />
-                }
-              />
-            </Flex>
-          </Spin>
-          <Box
-            css={{
-              mt: "$5",
-              mb: "$5",
-            }}
-          >
-            <CreateDialog />
-          </Box>
+      <BaseLayout>
+        <Spin spinning={isWidgetLoading || isWidgeFetching}>
+          <Widget widget={widget!} />
+        </Spin>
 
-          <Spin
-            tip="Carregando..."
-            spinning={isLoading || isFetching || isDeletingLoading}
-          >
-            <Table
-              columns={columns}
-              dataSource={products?.data}
-              pagination={{
-                total: products?.count,
-                current: page,
-                pageSize: pageSize,
-                showSizeChanger: true,
-                onChange: (page: number, pageSize: number) => {
-                  setPage(page);
-                  setPageSize(pageSize);
-                },
-              }}
-            />
-          </Spin>
-        </Box>
-      </Container>
+        <CreateDialog />
+
+        <DatePicker
+          onChange={handleChangeData}
+          defaultValue={dayjs()}
+          placeholder="Selecione o mês"
+          picker="month"
+        />
+
+        <Spin
+          tip="Carregando..."
+          spinning={isLoading || isFetching || isDeletingLoading}
+        >
+          <Table
+            rowKey="id"
+            columns={columns}
+            dataSource={products && products.data}
+            pagination={{
+              total: products?.data.length,
+              current: page,
+              pageSize: pageSize,
+              showSizeChanger: true,
+              onChange: (page: number, pageSize: number) => {
+                setPage(page);
+                setPageSize(pageSize);
+              },
+            }}
+          />
+        </Spin>
+      </BaseLayout>
     </>
   );
 }

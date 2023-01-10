@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
       });
       setUser(user);
       api.defaults.headers["Authorization"] = `Bearer ${token}`;
-      if (token) Router.push("/dashboards");
+      if (token) Router.push("/table");
       setIsloading(false);
     } catch (error) {
       setIsloading(false);

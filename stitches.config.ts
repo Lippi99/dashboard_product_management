@@ -40,6 +40,7 @@ export const {
       purple: "#B982FF",
       salmon: "#FEDCC5",
       background: "#f5f5f9",
+      text: "rgb(105, 122, 141)",
     },
 
     space: {

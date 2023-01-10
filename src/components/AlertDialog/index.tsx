@@ -61,7 +61,7 @@ export const AlertDialog = ({
     marginTop: 20,
     marginBottom: 30,
     fontSize: "1rem",
-    color: "rgb(105, 122, 141)",
+    color: "$text",
     fontWeight: 500,
     fontFamily: "$general",
     lineHeight: 1.5,

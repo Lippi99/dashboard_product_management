@@ -82,11 +82,6 @@ export const CreateDialog = () => {
     "100%": { opacity: 1 },
   });
 
-  const contentShow = keyframes({
-    "0%": { opacity: 0, transform: "translate(-50%, -48%) scale(.96)" },
-    "100%": { opacity: 1, transform: "translate(-50%, -50%) scale(1)" },
-  });
-
   const DialogOverlay = styled(Dialog.Overlay, {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     position: "fixed",
@@ -208,7 +203,12 @@ export const CreateDialog = () => {
   });
 
   return (
-    <>
+    <Box
+      css={{
+        mt: "$5",
+        mb: "$5",
+      }}
+    >
       {/* /success or error toast */}
       {contextHolder}
 
@@ -249,7 +249,7 @@ export const CreateDialog = () => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Valor do produto</Label>
                     <Input
-                      placeholder="Preço"
+                      placeholder="Preço do produto"
                       type="number"
                       step=".01"
                       register={{ ...register("price") }}
@@ -273,7 +273,7 @@ export const CreateDialog = () => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Comissão</Label>
                     <Input
-                      placeholder="Comissão"
+                      placeholder="Valor da comissão"
                       type="number"
                       step=".01"
                       register={{ ...register("commission") }}
@@ -285,7 +285,7 @@ export const CreateDialog = () => {
                   <Flex css={{ flexDirection: "column" }}>
                     <Label>Mão de obra</Label>
                     <Input
-                      placeholder="labor"
+                      placeholder="Preço da mão de obra"
                       type="number"
                       step=".01"
                       register={{ ...register("labor") }}
@@ -309,6 +309,6 @@ export const CreateDialog = () => {
           </DialogContent>
         </Dialog.Portal>
       </Dialog.Root>
-    </>
+    </Box>
   );
 };

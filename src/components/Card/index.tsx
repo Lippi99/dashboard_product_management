@@ -7,8 +7,6 @@ interface CardProps {
   title: string;
   value: string | number;
   image?: ReactNode;
-  percentage: number;
-  sinceWhen: string;
 }
 
 export const Card = ({ title, value, image }: CardProps) => {
@@ -16,7 +14,7 @@ export const Card = ({ title, value, image }: CardProps) => {
     <Container>
       <Flex css={{ height: "2rem" }} justify="between">
         <h2 className="title">{title}</h2>
-        <div>{image}</div>
+        {image}
       </Flex>
       <h1 className="price">{value}</h1>
     </Container>

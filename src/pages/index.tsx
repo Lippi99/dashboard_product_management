@@ -73,6 +73,7 @@ export default function Home() {
           <form onSubmit={handleSubmit(handleLogin)}>
             <fieldset className="fieldSet">
               <InputControlled
+                autoComplete="given-email"
                 label="Email"
                 placeholder="loremipsum@gmail.com"
                 type="text"
@@ -82,6 +83,7 @@ export default function Home() {
 
               <InputControlled
                 label="Senha"
+                autoComplete="given-password"
                 placeholder="Senha"
                 type="password"
                 register={{ ...register("password") }}

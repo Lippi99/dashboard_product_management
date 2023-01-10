@@ -1,16 +1,21 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { keyframes, styled } from "../../../stitches.config";
 import { InputControlled } from "../InputControlled";
-import { Button as AntButton, notification } from "antd";
+import {
+  Button as AntButton,
+  DatePicker,
+  DatePickerProps,
+  notification,
+} from "antd";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteProduct, updateProduct } from "../../services/product";
+import { updateProduct } from "../../services/product";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { Box } from "../Box";
 import { Grid } from "../Grid";
 import { useState } from "react";
-import { getAPIClient } from "../../services/axios";
+import dayjs from "dayjs";
 
 interface EditDialogProps {
   title: string;
@@ -19,12 +24,8 @@ interface EditDialogProps {
   data: ProductProps;
 }
 
-interface ProductID {
-  id: string;
-}
-
 interface ProductProps {
-  id: ProductID;
+  id: string;
   quantity: number;
   productName: string;
   price: number;
@@ -44,6 +45,8 @@ const schema = Yup.object({
 
 export const EditDialog = ({ data, title }: EditDialogProps) => {
   const [api, contextHolder] = notification.useNotification();
+  const [dateStart, setDateStart] = useState<string>();
+  const [dateEnd, setDateEnd] = useState<string>();
 
   const productID = data.id;
 
@@ -68,6 +71,19 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
     });
   };
 
+  const handleChangeData: DatePickerProps["onChange"] = (date, dateString) => {
+    const dateYear = dayjs(dateString).year();
+    const dateMonth = dayjs(dateString).month() + 1;
+
+    const dateStart = `${dateYear}-${dateMonth}-01`;
+    const dateEnd = `${dateYear}-${dateMonth}-31`;
+
+    setDateStart(dateStart);
+    setDateEnd(dateEnd);
+  };
+
+  console.log(dateStart?.toString());
+
   const { mutate: mutateUpdateProduct, isLoading } = useMutation({
     mutationFn: (values: ProductProps) => updateProduct(productID!, values),
     onSuccess: () => {
@@ -83,13 +99,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
     },
   });
 
-  // const handleUpdateProduct = async (data: ProductProps) => {
-  //   // setT(data);
-  //   // updateProduct(productID as any, t!);
-  //   mutateUpdateProduct(productID as any, data as any);
-  // };
-
-  // styles
   const overlayShow = keyframes({
     "0%": { opacity: 0 },
     "100%": { opacity: 1 },
@@ -149,7 +158,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
     maxWidth: "800px",
     height: "70vh",
     padding: 25,
-    // animation: `${contentShow} 150ms cubic-bezier(0.16, 1, 0.3, 1)`,
     "&:focus": { outline: "none" },
   });
 
@@ -306,6 +314,7 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
                     />
                   </Flex>
                 </Fieldset>
+
                 <Box css={{ position: "absolute", right: 20, bottom: 10 }}>
                   {isLoading ? (
                     <Button variant="loading">Carregando...</Button>

@@ -6,13 +6,14 @@ import { IoMdLogOut } from "react-icons/io";
 import { Box } from "../Box";
 import nookies from "nookies";
 import Router from "next/router";
+import { Tooltip } from "antd";
 
 const logout = () => {
   nookies.destroy(null, "doceifancia.auth");
   Router.reload();
 };
 export const Sidebar = () => {
-  const [navigate, setNavigate] = useState("dashboards");
+  const [navigate, setNavigate] = useState("table");
 
   const item = css({
     variants: {
@@ -91,7 +92,9 @@ export const Sidebar = () => {
           right: 0,
         }}
       >
-        <IoMdLogOut onClick={logout} color="#ff4d4f" size="1.3rem" />
+        <Tooltip placement="top" title="Sair">
+          <IoMdLogOut onClick={logout} color="#ff4d4f" size="1.3rem" />
+        </Tooltip>
       </Box>
     </Container>
   );
