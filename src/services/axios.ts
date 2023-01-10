@@ -3,7 +3,7 @@ import { parseCookies } from "nookies";
 export const getAPIClient = (ctx?: any) => {
   const { "doceifancia.auth": token } = parseCookies(ctx);
   const api = axios.create({
-    baseURL: "http://localhost:3050",
+    baseURL: `${process.env.ENVIRONMENT}`,
   });
 
   if (token) {
