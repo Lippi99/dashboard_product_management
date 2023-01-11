@@ -28,6 +28,7 @@ export const signInRequest = async ({ email, password }: AuthSignIn) => {
       "/api/user/login",
       data
     );
+
     const { admin, id, password, email, token } = response.data;
 
     let userAccount = {

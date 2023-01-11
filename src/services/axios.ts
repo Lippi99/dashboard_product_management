@@ -3,7 +3,7 @@ import { parseCookies } from "nookies";
 export const getAPIClient = (ctx?: any) => {
   const { "doceifancia.auth": token } = parseCookies(ctx);
   const api = axios.create({
-    baseURL: `${process.env.ENVIRONMENT}`,
+    baseURL: "https://doceinfancia-production.up.railway.app",
   });
 
   if (token) {
