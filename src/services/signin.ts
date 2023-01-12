@@ -24,7 +24,9 @@ export const signInRequest = async ({ email, password }: AuthSignIn) => {
   };
 
   try {
-    const response = await api.post<SignInRequestProps>(
+    const apiClient = getAPIClient();
+
+    const response = await apiClient.post<SignInRequestProps>(
       "/api/user/login",
       data
     );

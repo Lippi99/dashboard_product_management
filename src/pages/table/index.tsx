@@ -21,6 +21,7 @@ import { dateFormat } from "../../utils/date";
 import { BaseLayout } from "../../components/BaseLayout";
 import { Widget } from "../../components/Widget";
 import dayjs from "dayjs";
+import { Box } from "../../components/Box";
 
 interface ProductProps {
   id: string;
@@ -68,8 +69,8 @@ export default function Dashboards() {
     isLoading: isWidgetLoading,
     isFetching: isWidgeFetching,
   } = useQuery({
-    queryKey: ["productWidget"],
-    queryFn: getWidgetProduct,
+    queryKey: ["productWidget", dateStart, endDate],
+    queryFn: () => getWidgetProduct(dateStart, dateEnd),
     refetchOnWindowFocus: false,
   });
 
@@ -181,12 +182,15 @@ export default function Dashboards() {
 
         <CreateDialog />
 
-        <DatePicker
-          onChange={handleChangeData}
-          defaultValue={dayjs()}
-          placeholder="Selecione o mês"
-          picker="month"
-        />
+        <Box css={{ mb: "$5" }}>
+          <DatePicker
+            onChange={handleChangeData}
+            defaultValue={dayjs()}
+            placeholder="Selecione o mês"
+            picker="month"
+            allowClear={false}
+          />
+        </Box>
 
         <Spin
           tip="Carregando..."

@@ -55,10 +55,12 @@ export const deleteProduct = async (id: string) => {
   } catch (error) {}
 };
 
-export const getWidgetProduct = async () => {
+export const getWidgetProduct = async (startDate: string, endDate: string) => {
   const apiClient = getAPIClient();
   try {
-    const response = await apiClient.get<ProductProps>("/api/product/total");
+    const response = await apiClient.get<ProductProps>(
+      `/api/product/total?startDate=${startDate}&endDate=${endDate}`
+    );
     return response.data;
   } catch (error) {}
 };
