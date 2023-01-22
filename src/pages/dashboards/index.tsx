@@ -4,13 +4,13 @@ import { parseCookies } from "nookies";
 import { BaseLayout } from "../../components/BaseLayout";
 import { CardChart } from "../../components/CardChart";
 import { BarChart } from "../../components/Charts/BarChart";
-import { ChartContainer } from "./styles";
 import { useQuery } from "@tanstack/react-query";
 import { mostProductsSold } from "../../services/dashboards";
 import { Box } from "../../components/Box";
 import { DatePicker, DatePickerProps, Empty } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
+import { ChartContainer } from "../../../styles/pages/dashboards";
 
 const initialDate = dayjs().startOf("month").format("YYYY-MM-DD");
 const endDate = dayjs().endOf("month").format("YYYY-MM-DD");
