@@ -201,7 +201,7 @@ export default function Dashboards() {
             columns={columns}
             dataSource={products && products.data}
             pagination={{
-              total: products?.data.length,
+              total: products?.count,
               current: page,
               pageSize: pageSize,
               showSizeChanger: true,

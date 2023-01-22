@@ -1,0 +1,67 @@
+import {
+  BarChart as RechartBar,
+  Bar,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
+import { TooltipContainer } from "./styles";
+
+interface BarChartProps {
+  data: Array<unknown>;
+}
+
+export const BarChart = ({ data }: BarChartProps) => {
+  const barColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#FFFF00", "#FFC0CB"];
+
+  const CustomTooltip = ({ active, payload, label }: any) => {
+    if (active && payload && payload.length) {
+      return (
+        <TooltipContainer>
+          <p className="label">Produto: {`${label}`}</p>
+          <p className="intro">Preço: R$ {payload[0].value}</p>
+        </TooltipContainer>
+      );
+    }
+
+    return null;
+  };
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartBar
+        data={data}
+        width={800}
+        height={400}
+        margin={{
+          top: 5,
+          right: 0,
+          left: 0,
+          bottom: 5,
+        }}
+      >
+        <XAxis dataKey="_id" />
+        <YAxis dataKey="price" />
+        <Tooltip
+          wrapperStyle={{
+            boxShadow: "rgb(161 172 184 / 12%) 0px 0.125rem 0.375rem 0px",
+            outlineColor: "transparent",
+            color: "black",
+            fontWeight: 600,
+            fontFamily: "Raleway" || "sans-serif",
+          }}
+          content={<CustomTooltip />}
+          cursor={{ fill: "transparent" }}
+        />
+        <Bar dataKey="price">
+          {data &&
+            data.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={barColors[index % 20]} />
+            ))}
+        </Bar>
+      </RechartBar>
+    </ResponsiveContainer>
+  );
+};

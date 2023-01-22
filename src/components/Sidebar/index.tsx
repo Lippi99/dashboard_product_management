@@ -7,6 +7,7 @@ import { Box } from "../Box";
 import nookies from "nookies";
 import Router from "next/router";
 import { Tooltip } from "antd";
+import NextLink from "next/link";
 
 const logout = () => {
   nookies.destroy(null, "doceifancia.auth");
@@ -50,26 +51,26 @@ export const Sidebar = () => {
       </ContainerHeader>
       <ul className="menu">
         <li className="item">
-          <a
+          <NextLink
             onClick={() => setNavigate("dashboards")}
             className={item({
               variant: navigate === "dashboards" ? "active" : "notActive",
             })}
-            href="#"
+            href="/dashboards"
           >
             Dashboards
-          </a>
+          </NextLink>
         </li>
         <li className="item">
-          <a
+          <NextLink
             onClick={() => setNavigate("table")}
             className={item({
               variant: navigate === "table" ? "active" : "notActive",
             })}
-            href="#"
+            href="/table"
           >
             Tabela
-          </a>
+          </NextLink>
         </li>
         <li className="item">
           <a
