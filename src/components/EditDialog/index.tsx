@@ -82,8 +82,6 @@ export const EditDialog = ({ data, title }: EditDialogProps) => {
     setDateEnd(dateEnd);
   };
 
-  console.log(dateStart?.toString());
-
   const { mutate: mutateUpdateProduct, isLoading } = useMutation({
     mutationFn: (values: ProductProps) => updateProduct(productID!, values),
     onSuccess: () => {

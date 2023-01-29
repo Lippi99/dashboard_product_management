@@ -5,12 +5,17 @@ import { BaseLayout } from "../../components/BaseLayout";
 import { CardChart } from "../../components/CardChart";
 import { BarChart } from "../../components/Charts/BarChart";
 import { useQuery } from "@tanstack/react-query";
-import { mostProductsSold } from "../../services/dashboards";
+import {
+  allProductsInMonths,
+  mostProductsSold,
+} from "../../services/dashboards";
 import { Box } from "../../components/Box";
 import { DatePicker, DatePickerProps, Empty } from "antd";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { ChartContainer } from "../../../styles/pages/dashboards";
+import { Flex } from "../../components/Flex";
+import { BarChartAllYear } from "../../components/Charts/BarChartAllYear";
 
 const initialDate = dayjs().startOf("month").format("YYYY-MM-DD");
 const endDate = dayjs().endOf("month").format("YYYY-MM-DD");
@@ -20,12 +25,18 @@ export default function Dashboards() {
   const [dateStart, setDateStart] = useState<string>(initialDate);
   const [dateEnd, setDateEnd] = useState<string>(endDate);
   const [dateMonth, setDateMonth] = useState<number>(currentMonth);
+  const [all, setAll] = useState<any>([]);
 
   const { data: products } = useQuery({
     queryKey: ["most-products-sold", dateStart, dateEnd],
     queryFn: () => mostProductsSold(dateStart, dateEnd),
     refetchOnWindowFocus: false,
-    staleTime: 1000 * 60 * 5,
+  });
+
+  const { data: productsByMonth } = useQuery({
+    queryKey: ["products-by-month"],
+    queryFn: allProductsInMonths,
+    refetchOnWindowFocus: false,
   });
 
   const handleChangeData: DatePickerProps["onChange"] = (date, dateString) => {
@@ -73,24 +84,46 @@ export default function Dashboards() {
             allowClear={false}
           />
         </Box>
-        <ChartContainer>
-          <CardChart cardTitle={`Maiores vendas de ${months[dateMonth!]}`}>
-            {products?.length == 0 ? (
-              <Box
-                css={{
-                  position: "absolute",
-                  left: "50%",
-                  top: "50%",
-                  transform: "translate(-50%, -50%)",
-                }}
-              >
-                <Empty description="Não encontrado" />
-              </Box>
-            ) : (
-              <BarChart data={products!} />
-            )}
-          </CardChart>
-        </ChartContainer>
+
+        <Flex css={{ gap: "8rem" }} direction="column">
+          <ChartContainer>
+            <CardChart cardTitle={"Vendas totais"}>
+              {productsByMonth?.length == 0 ? (
+                <Box
+                  css={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <Empty description="Não encontrado" />
+                </Box>
+              ) : (
+                <BarChartAllYear data={productsByMonth!} />
+              )}
+            </CardChart>
+          </ChartContainer>
+
+          <ChartContainer>
+            <CardChart cardTitle={`Maiores vendas de ${months[dateMonth!]}`}>
+              {products?.length == 0 ? (
+                <Box
+                  css={{
+                    position: "absolute",
+                    left: "50%",
+                    top: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                >
+                  <Empty description="Não encontrado" />
+                </Box>
+              ) : (
+                <BarChart data={products!} />
+              )}
+            </CardChart>
+          </ChartContainer>
+        </Flex>
       </BaseLayout>
     </>
   );

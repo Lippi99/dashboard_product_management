@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
   useEffect(() => {
     const retrieveUser = async () => {
       if (token) {
+        Router.push("/dashboards");
         const retrieveUserInformation = await meRequest();
         retrieveUserInformation && setUser(retrieveUserInformation);
       }
@@ -78,7 +79,7 @@ export const AuthProvider = ({ children }: ChildrenProps) => {
       });
       setUser(user);
       api.defaults.headers["Authorization"] = `Bearer ${token}`;
-      if (token) Router.push("/table");
+      if (token) Router.push("/dashboards");
       setIsloading(false);
     } catch (error) {
       setIsloading(false);
