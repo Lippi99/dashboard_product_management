@@ -5,7 +5,7 @@ export const getAPIClient = (ctx?: any) => {
   //asdasdsa
   const api = axios.create({
     // baseURL: "https://doceinfanciabackend-production.up.railway.app",
-    baseURL: "http://localhost:4000",
+    baseURL: process.env.URL,
   });
 
   if (token) {
