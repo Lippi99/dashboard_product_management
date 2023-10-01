@@ -1,5 +1,4 @@
-import { Container, ContainerHeader } from "./styles";
-import NextImage from "next/image";
+import { Container } from "./styles";
 import { css } from "../../../stitches.config";
 import { IoMdLogOut } from "react-icons/io";
 import { Box } from "../Box";
@@ -7,6 +6,7 @@ import nookies from "nookies";
 import Router, { useRouter } from "next/router";
 import { Tooltip } from "antd";
 import NextLink from "next/link";
+import { useSidebar } from "../../contexts/Sidebar";
 
 const logout = () => {
   nookies.destroy(null, "doceifancia.auth");
@@ -14,6 +14,7 @@ const logout = () => {
 };
 export const Sidebar = () => {
   const ClientRouter = useRouter();
+  const { collapsed } = useSidebar();
 
   const item = css({
     variants: {
@@ -22,12 +23,12 @@ export const Sidebar = () => {
           color: "#FC8F46",
           display: "block",
           background: "$salmon",
-          padding: "$2 0 $2 0",
+          padding: "$4 0 $4 0",
         },
         notActive: {
           color: "#697a8d",
           display: "block",
-          padding: "$2 0 $2 0",
+          padding: "$4 0 $4 0",
           transition: "200ms",
           "&:hover": {
             background: "rgba(67,89,113,.04)",
@@ -39,55 +40,37 @@ export const Sidebar = () => {
 
   return (
     <Container>
-      <ContainerHeader>
-        <NextImage
-          className="logo"
-          width={150}
-          height={80}
-          alt="logo"
-          src="/icons/logo.svg"
-        />
-      </ContainerHeader>
       <ul className="menu">
-        <li className="item">
+        <li
+          className={item({
+            variant:
+              ClientRouter.pathname === "/dashboards" ? "active" : "notActive",
+          })}
+        >
           <NextLink
-            // onClick={() => setNavigate("dashboards")}
-            className={item({
-              variant:
-                ClientRouter.pathname === "/dashboards"
-                  ? "active"
-                  : "notActive",
-            })}
+            style={{ color: "#FC8F46" }}
+            className="item"
             href="/dashboards"
           >
-            Dashboards
+            {collapsed ? "Dash..." : "Dashboards"}
           </NextLink>
         </li>
-        <li className="item">
-          <NextLink
-            className={item({
-              variant:
-                ClientRouter.pathname === "/table" ? "active" : "notActive",
-            })}
-            href="/table"
-          >
+        <li
+          className={item({
+            variant:
+              ClientRouter.pathname === "/table" ? "active" : "notActive",
+          })}
+        >
+          <NextLink style={{ color: "#FC8F46" }} className="item" href="/table">
             Tabela
           </NextLink>
         </li>
+        <Box css={{ position: "absolute", left: 0, right: 0, bottom: 30 }}>
+          <Tooltip placement="top" title="Sair">
+            <IoMdLogOut onClick={logout} color="#ff4d4f" size="1.3rem" />
+          </Tooltip>
+        </Box>
       </ul>
-      <Box
-        css={{
-          cursor: "pointer",
-          position: "absolute",
-          left: "45%",
-          bottom: "15%",
-          right: 0,
-        }}
-      >
-        <Tooltip placement="top" title="Sair">
-          <IoMdLogOut onClick={logout} color="#ff4d4f" size="1.3rem" />
-        </Tooltip>
-      </Box>
     </Container>
   );
 };

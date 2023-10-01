@@ -13,17 +13,7 @@ interface AvatarProps {
 export const Avatar = ({ user }: AvatarProps) => {
   return (
     <Container>
-      <AvatarAccount.Root className="AvatarRoot">
-        <AvatarAccount.Image
-          className="AvatarImage"
-          src={user?.image}
-          alt="Colm Tuite"
-        />
-        <AvatarAccount.Fallback className="AvatarFallback">
-          {user && user.name}
-        </AvatarAccount.Fallback>
-        \
-      </AvatarAccount.Root>
+      <AvatarAccount.Root className="AvatarRoot"></AvatarAccount.Root>
     </Container>
   );
 };

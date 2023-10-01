@@ -1,49 +1,75 @@
-import { Container, FormContainer, Redirect } from "../../styles/pages/login";
-import NextImage from "next/image";
-import NextLink from "next/link";
 import Head from "next/head";
-import { InputControlled } from "../components/InputControlled";
+import {
+  Container,
+  FormContainer,
+  Redirect,
+} from "../../../styles/pages/signup";
+import NextImage from "next/image";
+import { InputControlled } from "../../components/InputControlled";
+import { ISignup, signUp } from "../../services/signup";
 import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useAuth } from "../contexts/AuthContext";
-
-interface SigninProps {
-  email: string;
-  password: string;
-}
+import { useState } from "react";
+import { useRouter } from "next/router";
+import { message } from "antd";
+import NextLink from "next/link";
+import axios from "axios";
 
 const schema = Yup.object({
+  name: Yup.string().required("Insira seu nome"),
   email: Yup.string().required("Insira seu E-mail"),
   password: Yup.string().required("Insira sua senha"),
 });
 
-export default function Home() {
+export default function Signup() {
+  const [messageApi, messageResponse] = message.useMessage();
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SigninProps>({
+  } = useForm<ISignup>({
     resolver: yupResolver(schema),
   });
 
-  const { signIn, errorMessageLogin, isLoading } = useAuth();
-
-  const handleLogin = async (data: SigninProps) => {
+  const handleSignUp = async (data: ISignup) => {
+    setIsLoading(true);
     try {
-      await signIn(data);
+      await signUp(data);
+      setIsLoading(false);
+      messageApi.open({
+        type: "success",
+        content: "Usuário cadastrado com sucesso!",
+      });
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
     } catch (error) {
-      console.log("deu erro", error);
+      if (error && axios.isAxiosError(error)) {
+        setIsLoading(false);
+        messageApi.open({
+          type: "error",
+          content: "Usuário já cadastrado",
+        });
+      } else {
+        messageApi.open({
+          type: "error",
+          content: "Houve um erro ao cadastrar o usuário",
+        });
+      }
     }
   };
 
   return (
     <>
       <Head>
-        <title>Login</title>
+        <title>Cadastrar</title>
         <link rel="shortcut icon" href="/logo.ico" />
-        <meta property="og:title" content="Login" key="feltro" />
+        <meta property="og:title" content="Sign up" key="Sign up" />
       </Head>
+
       <Container>
         <NextImage
           className="birdImage"
@@ -71,8 +97,16 @@ export default function Home() {
             height={100}
             src="/icons/logo.svg"
           />
-          <form onSubmit={handleSubmit(handleLogin)}>
+          <form onSubmit={handleSubmit(handleSignUp)}>
             <fieldset className="fieldSet">
+              <InputControlled
+                autoComplete="given-name"
+                label="Nome"
+                placeholder="Nome"
+                type="text"
+                register={{ ...register("name") }}
+                errorMessage={errors.name?.message}
+              />
               <InputControlled
                 autoComplete="given-email"
                 label="Email"
@@ -92,22 +126,24 @@ export default function Home() {
               />
             </fieldset>
             {isLoading ? (
-              <button className="loading">Carregando...</button>
+              <button className="loading">Cadastrando...</button>
             ) : (
-              <button className="signIn">Entrar</button>
+              <button type="submit" className="signIn">
+                Cadastrar
+              </button>
             )}
           </form>
           <Redirect>
             <span>
-              Não tem uma conta?{" "}
-              <NextLink className="text" href="/signup">
-                crie aqui
+              Já tem uma conta?{" "}
+              <NextLink className="text" href="/">
+                voltar para o login
               </NextLink>
             </span>
           </Redirect>
         </FormContainer>
       </Container>
-      {errorMessageLogin}
+      {messageResponse}
     </>
   );
 }

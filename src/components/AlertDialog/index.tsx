@@ -28,6 +28,7 @@ export const AlertDialog = ({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     position: "fixed",
     inset: 0,
+    zIndex: 500,
     animation: `${overlayShow} 150ms cubic-bezier(0.16, 1, 0.3, 1)`,
   });
 
@@ -41,6 +42,7 @@ export const AlertDialog = ({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "90vw",
+    zIndex: 500,
     maxWidth: "500px",
     maxHeight: "85vh",
     padding: 25,

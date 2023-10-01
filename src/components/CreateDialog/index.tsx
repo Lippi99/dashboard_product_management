@@ -85,6 +85,7 @@ export const CreateDialog = () => {
   const DialogOverlay = styled(Dialog.Overlay, {
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     position: "fixed",
+    zIndex: 500,
     inset: 0,
     animation: `${overlayShow} `,
   });
@@ -133,6 +134,7 @@ export const CreateDialog = () => {
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "90vw",
+    zIndex: 500,
     maxWidth: "800px",
     height: "70vh",
     padding: 25,
