@@ -1,34 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
 
-First, run the development server:
 
-```bash
-npm run dev
-# or
-yarn dev
+
+![image](https://github.com/Lippi99/dashboard_product_management/assets/65247407/94d038fb-672b-41cf-8fac-43c38dcbdd48)
+
+# How to run the project?
+```
+1 - Open your terminal
+2 - yarn
+3 - yarn dev
+```
+# What's the project about?
+The project aims to register products in which the user fills in information such as product value, raw material value, commission, etc.
+The project has a dashboard to visualize total sales, which products are most sold in a given month and etc.
+
+# What are the stacks being used?
+### For front-end
+```
+1 - Next 13
+2 - Next UI (UI lib)
+3 - TailwindCSS
+4 - Axios
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### For backend
+```
+1 - Node Express
+2 - MySQL
+3 - Prisma
+```
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+### Accessing the application:
+```
+e-mail: admin@admin.com
+password: abc123
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+![image](https://github.com/Lippi99/dashboard_product_management/assets/65247407/a59abaaa-c471-4a01-8149-d09a0f72ddbb)
+# Como rodar o projeto?
+```
+1 - Abra o terminal
+2 - yarn
+3 - yarn dev
+```
+# O projeto é sobre o que?
+O projeto tem como objetivo cadastrar produtos em que o usuário preenche informações como valor do produto, valor da matéria prima, comissão e etc.
+O projeto conta com um dashboard para visualizar o total de vendas, quais os produtos mais vendidos de um determinado mês e etc.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+# Quais tecnologias estão sendo utilizadas?
+### front-end
+```
+1 - Next 13
+2 - Next UI (UI lib)
+3 - TailwindCSS
+4 - Axios
+```
 
-## Learn More
+### Backend
+```
+1 - Node Express
+2 - MySQL
+3 - Prisma
+```
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
