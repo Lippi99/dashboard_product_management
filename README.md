@@ -31,11 +31,6 @@ The project has a dashboard to visualize total sales, which products are most so
 3 - Prisma
 ```
 
-### Accessing the application:
-```
-e-mail: admin@admin.com
-password: abc123
-```
 
 ![image](https://github.com/Lippi99/dashboard_product_management/assets/65247407/a59abaaa-c471-4a01-8149-d09a0f72ddbb)
 # Como rodar o projeto?
