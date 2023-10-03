@@ -18,17 +18,17 @@ The project has a dashboard to visualize total sales, which products are most so
 # What are the stacks being used?
 ### For front-end
 ```
-1 - Next 13
-2 - Next UI (UI lib)
-3 - TailwindCSS
+1 - Next 12
+2 - Ant Design
+3 - StichesJS
 4 - Axios
 ```
 
 ### For backend
 ```
 1 - Node Express
-2 - MySQL
-3 - Prisma
+2 - MongoDB (migrated to MySQL recently in another repo)
+3 - Mongoose (migrated to Prisma recently in another repo)
 ```
 
 
@@ -46,16 +46,16 @@ O projeto conta com um dashboard para visualizar o total de vendas, quais os pro
 # Quais tecnologias estão sendo utilizadas?
 ### front-end
 ```
-1 - Next 13
-2 - Next UI (UI lib)
-3 - TailwindCSS
+1 - Node Express
+2 - Ant Design
+3 - StichesJS
 4 - Axios
 ```
 
 ### Backend
 ```
 1 - Node Express
-2 - MySQL
-3 - Prisma
+2 - MongoDB (migrado para MySQL recentemente em outro repo)
+3 - Mongoose (migrado para Prisma recentemente em outro repo
 ```
 
