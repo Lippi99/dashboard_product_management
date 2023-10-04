@@ -52,7 +52,12 @@ O projeto conta com um dashboard para visualizar o total de vendas, quais os pro
 4 - Axios
 ```
 
-### Backend
+### backend
+```
+1 - Node Express
+2 - MongoDB (migrado para MySQL recentemente em outro repo)
+3 - Mongoose (migrado para Prisma recentemente em outro repo)
+```
 ```
 1 - Node Express
 2 - MongoDB (migrado para MySQL recentemente em outro repo)
